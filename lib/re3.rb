@@ -4,7 +4,8 @@ require 're3/parser'
 module Re3
   class Regexp
     def initialize(str)
-      @states = Parser.compile(str)
+      @states = Compiler.new(str).compile
+
     end
 
     def match(s, engine = :nfa)

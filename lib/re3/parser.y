@@ -4,7 +4,7 @@ token CHAR
 
 rule
   target
-    : or_exps { val.first }
+    : or_exps { result = val.first }
     ;
 
   or_exps
@@ -26,7 +26,7 @@ rule
 
   paren_exp
     : '(' or_exps ')' { result = val[1] }
-    | CHAR { result = val.first }
+    | CHAR { result = [:char, val.first] }
 
 end
 

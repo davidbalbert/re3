@@ -129,7 +129,7 @@ Racc_debug_parser = false
 
 module_eval(<<'.,.,', 'parser.y', 6)
   def _reduce_1(val, _values, result)
-     val.first 
+     result = val.first 
     result
   end
 .,.,
@@ -199,7 +199,7 @@ module_eval(<<'.,.,', 'parser.y', 27)
 
 module_eval(<<'.,.,', 'parser.y', 28)
   def _reduce_11(val, _values, result)
-     result = val.first 
+     result = [:char, val.first] 
     result
   end
 .,.,
