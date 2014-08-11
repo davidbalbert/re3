@@ -1,6 +1,10 @@
 module Re3
   module States
     class AcceptState
+      def next_states_for(c)
+        []
+      end
+
       def accepts?
         true
       end
