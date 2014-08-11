@@ -1,29 +1,7 @@
 # Re3
 
-TODO: Write a gem description
+I'm working through Russ Cox's [regular expression essays](http://swtch.com/~rsc/regexp/) in Ruby.
 
-## Installation
+## License
 
-Add this line to your application's Gemfile:
-
-    gem 're3'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install re3
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/re3/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+This code was written by David Albert and is in the public domain.
