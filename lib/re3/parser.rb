@@ -8,11 +8,13 @@ require 'racc/parser.rb'
 
 
 require 're3/scanner'
+require 're3/nodes'
 
 module Re3
   class Parser < Racc::Parser
 
-module_eval(<<'...end parser.y/module_eval...', 'parser.y', 38)
+module_eval(<<'...end parser.y/module_eval...', 'parser.y', 39)
+  include Nodes
 
   def parse(s)
     @scanner = Scanner.new(s)
@@ -136,7 +138,7 @@ module_eval(<<'.,.,', 'parser.y', 6)
 
 module_eval(<<'.,.,', 'parser.y', 10)
   def _reduce_2(val, _values, result)
-     result = [:or, val.first, val.last ] 
+     result = Or.new(val.first, val.last) 
     result
   end
 .,.,
@@ -150,7 +152,7 @@ module_eval(<<'.,.,', 'parser.y', 11)
 
 module_eval(<<'.,.,', 'parser.y', 15)
   def _reduce_4(val, _values, result)
-     result = [:and, val.first, val.last] 
+     result = And.new(val.first, val.last) 
     result
   end
 .,.,
@@ -164,21 +166,21 @@ module_eval(<<'.,.,', 'parser.y', 16)
 
 module_eval(<<'.,.,', 'parser.y', 20)
   def _reduce_6(val, _values, result)
-     result = [:any, val.first] 
+     result = Any.new(val.first) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 21)
   def _reduce_7(val, _values, result)
-     result = [:one_plus, val.first] 
+     result = AtLeastOne.new(val.first) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 22)
   def _reduce_8(val, _values, result)
-     result = [:maybe, val.first] 
+     result = Maybe.new(val.first) 
     result
   end
 .,.,
@@ -192,14 +194,14 @@ module_eval(<<'.,.,', 'parser.y', 23)
 
 module_eval(<<'.,.,', 'parser.y', 27)
   def _reduce_10(val, _values, result)
-     result = val[1] 
+     result = Group.new(val[1]) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.y', 28)
   def _reduce_11(val, _values, result)
-     result = [:char, val.first] 
+     result = Char.new(val.first) 
     result
   end
 .,.,
