@@ -1,6 +1,10 @@
 module Re3
   module States
-    class AcceptState; end
+    class AcceptState
+      def accepts?
+        true
+      end
+    end
 
     class State
       attr_reader :char, :next_state
@@ -8,6 +12,18 @@ module Re3
       def initialize(char, next_state)
         @char = char
         @next_state  = next_state
+      end
+
+      def next_states_for(c)
+        if c == char
+          [next_state]
+        else
+          []
+        end
+      end
+
+      def accepts?
+        false
       end
     end
 
@@ -17,6 +33,14 @@ module Re3
       def initialize(left, right)
         @left  = left
         @right = right
+      end
+
+      def next_states_for(c)
+        left.next_states_for(c) + right.next_states_for(c)
+      end
+
+      def accepts?
+        false
       end
 
       def loop_left(new_left)
