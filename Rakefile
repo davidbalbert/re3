@@ -1,7 +1,10 @@
 require 'bundler/gem_tasks'
 require 'rake/testtask'
 
-task default: 'lib/re3/parser.rb'
+task default: :compile
+
+desc 'Build the regexp parser'
+task compile: 'lib/re3/parser.rb'
 
 rule '.rb' => '.y' do |t|
   sh "racc -o #{t.name} #{t.source}"
