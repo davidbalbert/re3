@@ -1,4 +1,4 @@
-require "re3/version"
+require 're3/version'
 require 're3/parser'
 
 module Re3

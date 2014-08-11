@@ -1,29 +1,37 @@
-require 're3/nfa'
+require 're3/states'
 
 module Re3
   module Nodes
-    class Char
-      def initialize(value)
-        @value = value
-      end
+    class Unary
+      include States
 
-      def compile(next_state = NFA::AcceptState.new)
-        NFA::State.new(@value, next_state)
-      end
-
-      def to_s
-        @value.to_s
+      def initialize(child)
+        @child = child
       end
     end
 
-    class Or
+    class Binary
+      include States
+
       def initialize(left, right)
         @left  = left
         @right = right
       end
+    end
 
-      def compile(next_state = NFA::AcceptState.new)
-        NFA::SplitState.new(@left.compile(next_state), @right.compile(next_state))
+    class Char < Unary
+      def compile(next_state = AcceptState.new)
+        State.new(@child, next_state)
+      end
+
+      def to_s
+        @child.to_s
+      end
+    end
+
+    class Or < Binary
+      def compile(next_state = AcceptState.new)
+        SplitState.new(@left.compile(next_state), @right.compile(next_state))
       end
 
       def to_s
@@ -31,13 +39,8 @@ module Re3
       end
     end
 
-    class And
-      def initialize(left, right)
-        @left  = left
-        @right = right
-      end
-
-      def compile(next_state = NFA::AcceptState.new)
+    class And < Binary
+      def compile(next_state = AcceptState.new)
         @left.compile(@right.compile(next_state))
       end
 
@@ -46,13 +49,9 @@ module Re3
       end
     end
 
-    class Any
-      def initialize(child)
-        @child = child
-      end
-
-      def compile(next_state = NFA::AcceptState.new)
-        res = NFA::SplitState.new(nil, next_state)
+    class Any < Unary
+      def compile(next_state = AcceptState.new)
+        res = SplitState.new(nil, next_state)
         res.loop_left(@child.compile(res))
 
         res
@@ -63,13 +62,9 @@ module Re3
       end
     end
 
-    class Maybe
-      def initialize(child)
-        @child = child
-      end
-
-      def compile(next_state = NFA::AcceptState.new)
-        NFA::SplitState.new(@child.compile(next_state), next_state)
+    class Maybe < Unary
+      def compile(next_state = AcceptState.new)
+        SplitState.new(@child.compile(next_state), next_state)
       end
 
       def to_s
@@ -77,13 +72,9 @@ module Re3
       end
     end
 
-    class AtLeastOne
-      def initialize(child)
-        @child = child
-      end
-
-      def compile(next_state = NFA::AcceptState.new)
-        split = NFA::SplitState.new(nil, next_state)
+    class AtLeastOne < Unary
+      def compile(next_state = AcceptState.new)
+        split = SplitState.new(nil, next_state)
         res = @child.compile(split)
         split.loop_left(res)
 
@@ -95,12 +86,8 @@ module Re3
       end
     end
 
-    class Group
-      def initialize(child)
-        @child = child
-      end
-
-      def compile
+    class Group < Unary
+      def compile(next_state = AcceptState.new)
         @child.compile
       end
 

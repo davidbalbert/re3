@@ -1,5 +1,5 @@
 module Re3
-  module NFA
+  module States
     class AcceptState; end
 
     class State
