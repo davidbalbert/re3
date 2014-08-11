@@ -14,6 +14,6 @@ require 'benchmark'
 
   Benchmark.bm do |x|
     x.report("Ruby:") { Regexp.new(regexp_string).match input }
-    x.report("Re3:") { Re3::Regexp.new(regexp_string).match input }
+    x.report("Re3: ") { Re3::Regexp.new(regexp_string).match input }
   end
 end
