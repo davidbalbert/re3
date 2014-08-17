@@ -3,7 +3,7 @@ require 'minitest/autorun'
 require 're3'
 
 class RegexpTest < Minitest::Test
-  ENGINES = [Re3::Engines::ThompsonEngine]
+  ENGINES = [:thompson, :recursive]
 
   def test_simple_match
     r = Re3::Regexp.new "hello"

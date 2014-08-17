@@ -14,6 +14,10 @@ module Re3
     end
 
     def match(s, engine = Engines::ThompsonEngine)
+      if engine.is_a? Symbol
+        engine = Engines.const_get("#{engine.capitalize}Engine")
+      end
+
       engine.new(self, s).match
     end
 
