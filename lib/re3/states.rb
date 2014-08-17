@@ -7,14 +7,6 @@ module Re3
     end
 
     class AcceptState < State
-      def expand
-        [self]
-      end
-
-      def next_states_for(c)
-        []
-      end
-
       def accepts?
         true
       end
@@ -27,18 +19,6 @@ module Re3
         @char = char
         @next_state  = next_state
       end
-
-      def expand
-        [self]
-      end
-
-      def next_states_for(c)
-        if c == char
-          next_state.expand
-        else
-          []
-        end
-      end
     end
 
     class SplitState < State
@@ -47,10 +27,6 @@ module Re3
       def initialize(left, right)
         @left  = left
         @right = right
-      end
-
-      def expand
-        left.expand + right.expand
       end
 
       def loop_left(new_left)
