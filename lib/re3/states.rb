@@ -1,6 +1,12 @@
 module Re3
   module States
-    class AcceptState
+    class State
+      def accepts?
+        false
+      end
+    end
+
+    class AcceptState < State
       def expand
         [self]
       end
@@ -14,7 +20,7 @@ module Re3
       end
     end
 
-    class State
+    class CharState < State
       attr_reader :char, :next_state
 
       def initialize(char, next_state)
@@ -33,13 +39,9 @@ module Re3
           []
         end
       end
-
-      def accepts?
-        false
-      end
     end
 
-    class SplitState
+    class SplitState < State
       attr_reader :left, :right
 
       def initialize(left, right)
@@ -49,10 +51,6 @@ module Re3
 
       def expand
         left.expand + right.expand
-      end
-
-      def accepts?
-        false
       end
 
       def loop_left(new_left)

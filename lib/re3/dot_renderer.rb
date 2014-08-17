@@ -3,23 +3,9 @@ require 're3/states'
 require 'set'
 
 module Re3
-  module States
-    class State
-      def to_dot
-        DotRenderer.new(self).to_dot
-      end
-    end
-
-    class AcceptState
-      def to_dot
-        DotRenderer.new(self).to_dot
-      end
-    end
-
-    class SplitState
-      def to_dot
-        DotRenderer.new(self).to_dot
-      end
+  class States::State
+    def to_dot
+      DotRenderer.new(self).to_dot
     end
   end
 
@@ -122,7 +108,7 @@ EOS
         state = n.state
 
         case state
-        when State
+        when CharState
           next_node = node_for(state.next_state)
           q.enqueue(next_node)
         when SplitState
@@ -140,7 +126,7 @@ EOS
         name = n.name
 
         case state
-        when State
+        when CharState
           next_state = node_for(state.next_state)
           [Edge.new(name, next_state.name, state.char)]
         when SplitState

@@ -1,6 +1,7 @@
 require 're3/version'
 require 're3/parser'
 require 're3/engines'
+require 're3/dot_renderer'
 
 require 'set'
 

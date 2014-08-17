@@ -21,7 +21,7 @@ module Re3
 
     class Char < Unary
       def compile(next_state = AcceptState.new)
-        State.new(@child, next_state)
+        CharState.new(@child, next_state)
       end
 
       def to_s

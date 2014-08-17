@@ -39,7 +39,7 @@ module Re3
 
       def match_state(input, state)
         case state
-        when State
+        when CharState
           if input[0] == state.char
             match_state(input[1..-1], state.next_state)
           else
