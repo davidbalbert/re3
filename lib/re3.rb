@@ -3,8 +3,6 @@ require 're3/parser'
 require 're3/engines'
 require 're3/dot_renderer'
 
-require 'set'
-
 module Re3
   class MatchError < StandardError; end
 
