@@ -2,7 +2,14 @@ require 'set'
 
 module Re3
   class DotRenderer
-    NamedNode = Struct.new(:name, :state)
+    NamedNode = Struct.new(:name, :state, :accept_state) do
+      def to_s
+        s = "  #{name}"
+        s += " [shape=doublecircle]" if accept_state
+        s += ";"
+      end
+    end
+
     Edge = Struct.new(:from, :to, :label) do
       def to_s
         s = "  #{from} -> #{to}"
@@ -22,7 +29,7 @@ digraph out {
   nodesep=0.6;
 EOS
 
-    POSTAMBLE = "\n}\n"
+    POSTAMBLE = "}\n"
 
     def initialize(start_state)
       @start_state = start_state
@@ -36,7 +43,10 @@ EOS
     def to_dot
       edges = get_edges
 
-      PREAMBLE + edges.map(&:to_s).join("\n") + POSTAMBLE
+      nodes_string = @node_map.values.map(&:to_s).join("\n") + "\n"
+      edges_string = edges.map(&:to_s).join("\n") + "\n"
+
+      PREAMBLE + nodes_string + edges_string + POSTAMBLE
     end
 
     private
@@ -84,7 +94,9 @@ EOS
 
     def node_for(state)
       unless @node_map.has_key?(state)
-        @node_map[state] = NamedNode.new(next_name, state)
+        n = NamedNode.new(next_name, state)
+        n.accept_state = true if state.accepts?
+        @node_map[state] = n
       end
 
       @node_map[state]
