@@ -31,75 +31,102 @@ EOS
 
     POSTAMBLE = "}\n"
 
+    include States
+
+    class NonRepeatingQueue
+      def initialize
+        @q = []
+        @seen = Set.new
+      end
+
+      def empty?
+        @q.empty?
+      end
+
+      def enqueue(o)
+        @q << o unless @seen.include? o
+      end
+
+      def dequeue
+        o = @q.shift
+        @seen << o
+
+        o
+      end
+    end
+
     def initialize(start_state)
       @start_state = start_state
       @state_counter = 0
 
-      @processed_nodes = Set.new
-      @node_map = {}
-      @node_queue = []
+      @node_cache = {}
     end
 
     def to_dot
-      edges = get_edges
+      nodes = get_nodes
+      edges = get_edges(nodes)
 
-      nodes_string = @node_map.values.map(&:to_s).join("\n") + "\n"
+      nodes_string = nodes.map(&:to_s).join("\n") + "\n"
       edges_string = edges.map(&:to_s).join("\n") + "\n"
 
       PREAMBLE + nodes_string + edges_string + POSTAMBLE
     end
 
     private
-    def get_edges
-      edges = []
-      enqueue(node_for(@start_state))
+    def get_nodes
+      nodes = []
+      q = NonRepeatingQueue.new
+      q.enqueue(node_for(@start_state))
 
-      until @node_queue.empty?
-        n = dequeue
+      until q.empty?
+        n = q.dequeue
+
+        nodes << n
 
         name = n.name
         state = n.state
 
         case state
-        when States::State
+        when State
           next_node = node_for(state.next_state)
-          enqueue(next_node)
-
-          edges << Edge.new(name, next_node.name, state.char)
-        when States::SplitState
-          n1 = node_for(state.left)
-          n2 = node_for(state.right)
-
-          enqueue(n1)
-          enqueue(n2)
-
-          edges << Edge.new(name, n1.name, nil)
-          edges << Edge.new(name, n2.name, nil)
+          q.enqueue(next_node)
+        when SplitState
+          q.enqueue(node_for(state.left))
+          q.enqueue(node_for(state.right))
         end
       end
 
-      edges
+      nodes
     end
 
-    def enqueue(node)
-      @node_queue << node unless @processed_nodes.include? node
-    end
+    def get_edges(nodes)
+      nodes.map do |n|
+        state = n.state
+        name = n.name
 
-    def dequeue
-      n = @node_queue.shift
-      @processed_nodes << n
+        case state
+        when State
+          next_state = node_for(state.next_state)
+          [Edge.new(name, next_state.name, state.char)]
+        when SplitState
+          n1 = node_for(state.left)
+          n2 = node_for(state.right)
 
-      n
+          [Edge.new(name, n1.name, nil), Edge.new(name, n2.name, nil)]
+        when AcceptState
+          []
+        end
+      end.reduce(:+)
     end
 
     def node_for(state)
-      unless @node_map.has_key?(state)
+      unless @node_cache.has_key?(state)
         n = NamedNode.new(next_name, state)
         n.accept_state = true if state.accepts?
-        @node_map[state] = n
+        @node_cache[state] = n
       end
 
-      @node_map[state]
+      @node_cache[state]
     end
 
     def next_name
