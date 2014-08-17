@@ -92,4 +92,16 @@ class RegexpTest < Minitest::Test
       assert r.match("abc", e)
     end
   end
+
+  def test_group
+    r = Re3::Regexp.new("(ab)+(cd)?")
+
+    ENGINES.each do |e|
+      refute r.match("", e)
+      assert r.match("ab", e)
+      assert r.match!("abab", e)
+      assert r.match("abcd", e)
+      assert r.match("ababcd", e)
+    end
+  end
 end

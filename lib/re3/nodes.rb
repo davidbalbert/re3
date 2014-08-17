@@ -88,7 +88,7 @@ module Re3
 
     class Group < Unary
       def compile(next_state = AcceptState.new)
-        @child.compile
+        @child.compile(next_state)
       end
 
       def to_s

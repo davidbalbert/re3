@@ -44,8 +44,6 @@ EOS
 
     POSTAMBLE = "}\n"
 
-    include States
-
     class NonRepeatingQueue
       def initialize
         @q = []
@@ -100,10 +98,10 @@ EOS
         state = n.state
 
         case state
-        when State
+        when States::State
           next_node = node_for(state.next_state)
           q.enqueue(next_node)
-        when SplitState
+        when States::SplitState
           q.enqueue(node_for(state.left))
           q.enqueue(node_for(state.right))
         end
@@ -118,15 +116,15 @@ EOS
         name = n.name
 
         case state
-        when State
+        when States::State
           next_state = node_for(state.next_state)
           [Edge.new(name, next_state.name, state.char)]
-        when SplitState
+        when States::SplitState
           n1 = node_for(state.left)
           n2 = node_for(state.right)
 
           [Edge.new(name, n1.name, nil), Edge.new(name, n2.name, nil)]
-        when AcceptState
+        when States::AcceptState
           []
         end
       end.reduce(:+)
