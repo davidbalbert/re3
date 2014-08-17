@@ -2,11 +2,18 @@ require 'set'
 
 module Re3
   class DotRenderer
-    NamedNode = Struct.new(:name, :state, :accept_state) do
+    class DotNode
+      attr_reader :name, :state
+
+      def initialize(state, next_index)
+        @name = "\"s#{next_index}-#{state.object_id}\""
+        @state = state
+      end
+
       def to_s
         s = "  #{name}"
 
-        if accept_state
+        if @state.accepts?
           s += " [shape=doublecircle]"
         else
           s += " [shape=circle]"
@@ -127,19 +134,16 @@ EOS
 
     def node_for(state)
       unless @node_cache.has_key?(state)
-        n = NamedNode.new(next_name, state)
-        n.accept_state = true if state.accepts?
-        @node_cache[state] = n
+        @node_cache[state] = DotNode.new(state, next_index)
       end
 
       @node_cache[state]
     end
 
-    def next_name
-      name = "s#{@state_counter}"
+    def next_index
+      @state_counter
+    ensure
       @state_counter += 1
-
-      name
     end
   end
 end
