@@ -99,7 +99,7 @@ class RegexpTest < Minitest::Test
     ENGINES.each do |e|
       refute r.match("", e)
       assert r.match("ab", e)
-      assert r.match!("abab", e)
+      assert r.match("abab", e)
       assert r.match("abcd", e)
       assert r.match("ababcd", e)
     end
