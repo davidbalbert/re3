@@ -1,12 +1,34 @@
+require 're3/states'
+
 require 'set'
 
 module Re3
+  module States
+    class State
+      def to_dot
+        DotRenderer.new(self).to_dot
+      end
+    end
+
+    class AcceptState
+      def to_dot
+        DotRenderer.new(self).to_dot
+      end
+    end
+
+    class SplitState
+      def to_dot
+        DotRenderer.new(self).to_dot
+      end
+    end
+  end
+
   class DotRenderer
     class DotNode
       attr_reader :name, :state
 
       def initialize(state, next_index)
-        @name = "\"s#{next_index}-#{state.object_id}\""
+        @name = "\"s#{next_index}\""
         @state = state
       end
 
@@ -43,6 +65,8 @@ digraph out {
 EOS
 
     POSTAMBLE = "}\n"
+
+    include States
 
     class NonRepeatingQueue
       def initialize
@@ -98,10 +122,10 @@ EOS
         state = n.state
 
         case state
-        when States::State
+        when State
           next_node = node_for(state.next_state)
           q.enqueue(next_node)
-        when States::SplitState
+        when SplitState
           q.enqueue(node_for(state.left))
           q.enqueue(node_for(state.right))
         end
@@ -116,15 +140,15 @@ EOS
         name = n.name
 
         case state
-        when States::State
+        when State
           next_state = node_for(state.next_state)
           [Edge.new(name, next_state.name, state.char)]
-        when States::SplitState
+        when SplitState
           n1 = node_for(state.left)
           n2 = node_for(state.right)
 
           [Edge.new(name, n1.name, nil), Edge.new(name, n2.name, nil)]
-        when States::AcceptState
+        when AcceptState
           []
         end
       end.reduce(:+)

@@ -1,16 +1,6 @@
-require 're3/dot_renderer'
-
 module Re3
   module States
-    module Dottable
-      def to_dot
-        DotRenderer.new(self).to_dot
-      end
-    end
-
     class AcceptState
-      include Dottable
-
       def expand
         [self]
       end
@@ -25,8 +15,6 @@ module Re3
     end
 
     class State
-      include Dottable
-
       attr_reader :char, :next_state
 
       def initialize(char, next_state)
@@ -52,8 +40,6 @@ module Re3
     end
 
     class SplitState
-      include Dottable
-
       attr_reader :left, :right
 
       def initialize(left, right)
