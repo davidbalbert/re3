@@ -5,6 +5,8 @@ require 're3/engines'
 require 'set'
 
 module Re3
+  class MatchError < StandardError; end
+
   class Regexp
     attr_reader :start_state
 
@@ -19,6 +21,10 @@ module Re3
       end
 
       engine.new(self, s).match
+    end
+
+    def match!(s, engine = Engines::ThompsonEngine)
+      match(s, engine) or raise MatchError, "#{to_s} match failed on input \"#{s}\" with engine \"#{engine}\""
     end
 
     def to_s
