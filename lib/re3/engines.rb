@@ -3,7 +3,7 @@ module Re3
     class ThompsonEngine
       def initialize(regexp, input)
         @input  = input
-        @current_states = [regexp.start_state].to_set
+        @current_states = regexp.start_state.expand.to_set
       end
 
       def match

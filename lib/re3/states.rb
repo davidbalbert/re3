@@ -11,6 +11,10 @@ module Re3
     class AcceptState
       include Dottable
 
+      def expand
+        [self]
+      end
+
       def next_states_for(c)
         []
       end
@@ -30,9 +34,13 @@ module Re3
         @next_state  = next_state
       end
 
+      def expand
+        [self]
+      end
+
       def next_states_for(c)
         if c == char
-          [next_state]
+          next_state.expand
         else
           []
         end
@@ -53,8 +61,8 @@ module Re3
         @right = right
       end
 
-      def next_states_for(c)
-        left.next_states_for(c) + right.next_states_for(c)
+      def expand
+        left.expand + right.expand
       end
 
       def accepts?
