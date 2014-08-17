@@ -5,7 +5,13 @@ module Re3
     NamedNode = Struct.new(:name, :state, :accept_state) do
       def to_s
         s = "  #{name}"
-        s += " [shape=doublecircle]" if accept_state
+
+        if accept_state
+          s += " [shape=doublecircle]"
+        else
+          s += " [shape=circle]"
+        end
+
         s += ";"
       end
     end
