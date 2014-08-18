@@ -3,9 +3,9 @@ module Re3
     class RecursiveEngine
       include States
 
-      def initialize(regexp, input)
+      def initialize(nodes, input)
         @input = input
-        @start_state = regexp.start_state
+        @start_state = nodes.compile_nfa
       end
 
       def match

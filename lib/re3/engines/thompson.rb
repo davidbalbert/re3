@@ -5,9 +5,9 @@ module Re3
     class ThompsonEngine
       include States
 
-      def initialize(regexp, input)
-        @input  = input
-        @current_states = expand(regexp.start_state)
+      def initialize(nodes, input)
+        @input = input
+        @current_states = expand(nodes.compile_nfa)
       end
 
       def match
