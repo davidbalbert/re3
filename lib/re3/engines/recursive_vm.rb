@@ -15,20 +15,24 @@ module Re3
       end
 
       def run_vm(pc, input)
-        ins = @instructions[pc]
-        case ins
-        when Char
-          if input[0] != ins.c
-            false
-          else
-            run_vm(pc + 1, input[1..-1])
+        loop do
+          ins = @instructions[pc]
+          case ins
+          when Char
+            if input[0] != ins.c
+              return false
+            else
+              pc += 1
+              input = input[1..-1]
+            end
+          when Match
+            return input.empty?
+          when Jump
+            pc = ins.loc
+          when Split
+            return true if run_vm(ins.loc1, input)
+            pc = ins.loc2
           end
-        when Match
-          input.empty?
-        when Jump
-          run_vm(ins.loc, input)
-        when Split
-          run_vm(ins.loc1, input) || run_vm(ins.loc2, input)
         end
       end
     end
