@@ -34,7 +34,7 @@ module Re3
     alias inspect to_s
 
     def to_dot
-      compile_nfa.to_dot
+      nodes.compile_nfa.to_dot
     end
   end
 end

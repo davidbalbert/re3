@@ -40,10 +40,13 @@ module Re3
         end
       end
 
-      def expand(state)
+      def expand(state, visited = Set.new)
+        return Set.new if visited.include? state
+        visited << state
+
         case state
         when SplitState
-          expand(state.left) + expand(state.right)
+          expand(state.left, visited) + expand(state.right, visited)
         when CharState, AcceptState
           [state].to_set
         end
